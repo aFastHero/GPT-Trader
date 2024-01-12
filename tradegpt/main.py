@@ -6,6 +6,7 @@ from data.context import DataContext, InsightContext
 from data.insights.price_action import PriceAction
 from data.insights.current_price import CurrentPrice
 from data.insights.linelevels import LineLevels
+from data.insights.macd import MACD
 from data.insights.fiblevels import FibonacciLevels
 from data.insights.momentum import Momentum
 from data.insights.news import News
@@ -36,6 +37,7 @@ def main(prompt_only=False):
         News(),
         LineLevels(3, 45),
         FibonacciLevels(),
+        MACD(),
         CurrentPrice(),
         PriceAction(day_lookback=120),
         VIX()
