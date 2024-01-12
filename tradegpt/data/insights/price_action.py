@@ -14,7 +14,7 @@ class PriceAction(Insight):
         results = []
         df = datum[(datum['name'] == 'CLOSE') | (datum['name'] == 'VOLUME')].tail(self.day_lookback).copy()
 
-        df['date'] = pd.to_datetime(df['date'])
+        df['date'] = pd.to_datetime(df['date'], utc=True)
         grouped = df.groupby('date')
 
         for date, group in grouped:

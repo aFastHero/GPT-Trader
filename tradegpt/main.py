@@ -6,6 +6,7 @@ from data.context import DataContext, InsightContext
 from data.insights.price_action import PriceAction
 from data.insights.current_price import CurrentPrice
 from data.insights.linelevels import LineLevels
+from data.insights.fiblevels import FibonacciLevels
 from data.insights.momentum import Momentum
 from data.insights.news import News
 from data.sources.yahoo import YahooSource
@@ -13,7 +14,7 @@ from data.sources.tdameritrade import TDAmeritrade
 from data.insights.options import Options
 from data.insights.vix import VIX
 from utils import ask_gpt, save_response
-from prompt import MARKET_SYSTEM, OPTIONS_SYSTEM, OPTIONS_USER
+from prompt import MARKET_SYSTEM, MARKET_USER, OPTIONS_SYSTEM, OPTIONS_USER
 
 load_dotenv()
 
@@ -34,8 +35,9 @@ def main(prompt_only=False):
         Momentum(most_recent=True),
         News(),
         LineLevels(3, 45),
+        FibonacciLevels(),
         CurrentPrice(),
-        PriceAction(day_lookback=60),
+        PriceAction(day_lookback=120),
         VIX()
     ]
 
@@ -47,13 +49,13 @@ def main(prompt_only=False):
         results = insights_context.get_insights(arrow.now().shift(days=-1))
 
         insight_prompts = "\n".join([r.to_prompt() for r in results])
-        prompt = OPTIONS_USER.replace('$C', insight_prompts)
+        prompt = MARKET_USER.replace('$C', insight_prompts)
 
         with open('prompt.txt', 'w', encoding='utf-8') as f:
             f.write(prompt)
 
         if not prompt_only:
-            response = ask_gpt(OPTIONS_SYSTEM, prompt, model='gpt-4')
+            response = ask_gpt(MARKET_SYSTEM, prompt, model='gpt-4-1106-preview')
             save_response(response, symbol)
 
 if __name__ == "__main__":

@@ -17,10 +17,12 @@ class LineLevels(Insight):
         lows = datum[datum['name'] == 'LOW'].copy()
         highs = datum[datum['name'] == 'HIGH'].copy()
 
-        support_levels = lows[lows['value'] < lows['value'].shift(1)][lows['value'] < lows['value'].shift(-1)].dropna()
+        # support_levels = lows[lows['value'] < lows['value'].shift(1)][lows['value'] < lows['value'].shift(-1)].dropna()
+        support_levels = lows[(lows['value'] < lows['value'].shift(1)) & (lows['value'] < lows['value'].shift(-1))].dropna()
         support_levels['value'] = support_levels['value'].astype(float)
 
-        resistance_levels = highs[highs['value'] > highs['value'].shift(1)][highs['value'] > highs['value'].shift(-1)].dropna()
+        # resistance_levels = highs[highs['value'] > highs['value'].shift(1)][highs['value'] > highs['value'].shift(-1)].dropna()
+        resistance_levels = highs[(highs['value'] > highs['value'].shift(1)) & (highs['value'] > highs['value'].shift(-1))].dropna()
         resistance_levels['value'] = resistance_levels['value'].astype(float)
 
         for _, support in support_levels.nsmallest(self.n_levels, 'value').iterrows():
