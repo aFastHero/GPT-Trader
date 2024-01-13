@@ -3,7 +3,7 @@ import arrow
 import pandas as pd
 from typing import List
 from data.insights.insight import Insight
-from data.models import Contract, InsightResult
+from data.models import InsightResult
 
 
 class Options(Insight):
